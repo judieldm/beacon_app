@@ -1,25 +1,36 @@
 'use strict';
-(function(){
+(function () {
   angular.module('main')
   .config(function ($stateProvider, $urlRouterProvider) {
 
     // ROUTING with ui.router
-    $urlRouterProvider.otherwise('/main');
+    $urlRouterProvider.otherwise('/beacon/search');
     $stateProvider
-      // this state is placed in the <ion-nav-view> in the index.html
-      .state('main', {
-        url: '/main',
-        //template: '<ion-view view-title="main">hi</ion-view>',
-         templateUrl: 'main/templates/list-controller.html',
-        // controller: 'SomeCtrl as ctrl'
+      .state('beacon', {
+        url: '/beacon',
+        abstract: true,
+        templateUrl: 'main/templates/main.html'
       })
-      .state('list', {
+      // this state is placed in the <ion-nav-view> in the index.html
+      .state('beacon.search', {
+        url: '/search',
+        views: {
+          'search': {
+            templateUrl: 'main/templates/search.html',
+            controller: 'HomeCtrl as vm'
+          }
+        }
+      })
+      .state('beacon.list', {
         url: '/list',
-        //template: '<ion-view view-title="main"></ion-view>',
-         templateUrl: 'main/templates/list-controller.html',
-        // controller: 'SomeCtrl as ctrl'
-      });;
+        views: {
+          'list': {
+            templateUrl: 'main/templates/list.html',
+            controller: 'ListCtrl as vm'
+          }
+        }
+      });
   });
 
 
-  })();
+})();

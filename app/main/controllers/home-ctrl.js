@@ -1,12 +1,26 @@
 'use strict';
-(function(){
+(function () {
 
   angular.module('main')
-  .controller('HomeCtrl',homeCtrl);
+  .controller('HomeCtrl', homeCtrl);
 
-  function homeCtrl ($log) {
-
-    $log.log('Hello from your Controller: HomeCtrl in module main:. This is your controller:', this);
+  function homeCtrl ($log, $rootScope, $ionicPlatform, $cordovaBeacon, $timeout) {
+    var vm = this;
+    vm.isFounded = false;
+    $timeout(function () {
+      vm.isFounded = true;
+      $log.log(vm.isFounded);
+    }, 500);
+    /*--------------------------------------*/
+    $ionicPlatform.ready(onReady);
+    function onReady () {
+      if (window.cordova) {
+        $cordovaBeacon.isBluetoothEnabled()
+        .then(function (boolean) {
+          $log.log(boolean);
+        });
+      }
+    }
 
   }
 
