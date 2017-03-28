@@ -18,6 +18,7 @@
     <allow-intent href="geo:*" />
     <platform name="android">
         <allow-intent href="market:*" />
+        <preference name="loadUrlTimeoutValue" value="700000" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
@@ -38,4 +39,5 @@
         <variable name="XWALK_MODE" value="embedded" />
         <variable name="XWALK_MULTIPLEAPK" value="true" />
     </plugin>
+    <plugin name="cordova-plugin-bluetoothle" spec="https://github.com/randdusing/BluetoothLE" />
 </widget>

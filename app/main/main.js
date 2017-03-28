@@ -4,6 +4,7 @@
     'ionic',
     'ngCordova',
     'ui.router',
+    'ngCordovaBluetoothLE'
     // TODO: load other modules selected during generation
   ])
   .run(function ($ionicPlatform) {

@@ -21,7 +21,9 @@ $ionicons-font-path: "../assets/fonts" !default;
 // Include all of Ionic
 @import "../../bower_components/ionic/scss/ionic";
 
-
+.tab-item{
+  max-width: none;
+}
 .center {
     margin-left: auto;
     margin-right: auto;
