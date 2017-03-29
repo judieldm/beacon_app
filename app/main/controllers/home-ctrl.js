@@ -4,23 +4,20 @@
   angular.module('main')
   .controller('HomeCtrl', homeCtrl);
 
-  function homeCtrl ($log, $rootScope, $ionicPlatform, $cordovaBeacon, $timeout, $ionicPopup, $cordovaBluetoothLE) {
+  function homeCtrl ($log, $rootScope, $ionicPlatform, $cordovaBeacon, $timeout, $ionicPopup) {
     var vm = this;
     vm.isFounded = false;
     vm.test = 'dddd';
     vm.value;
-    $timeout(function () {
-      vm.isFounded = true;
-      $log.log(vm.test);
-    }, 500);
     /*--------------------------------------*/
     $ionicPlatform.ready(onReady);
     function onReady () {
       if (window.cordova) {
-        init();
+        $cordovaBeacon.isBluetoothEnabled()
+        .then(bluetoothVerification);
       }
     }
-    function init () {
+   /* function init () {
       var params = {
         request: true,
         //restoreKey: "bluetooth-test-app"
@@ -106,10 +103,13 @@
           template: JSON.stringify(obj)
         });
       });
-    }
-   /* function bluetoothVerification (boolean) {
+    }*/
+    function bluetoothVerification (boolean) {
       if (!boolean) {
         showPopUp();
+      }
+      else {
+        init();
       }
     }
     function showPopUp () {
@@ -125,10 +125,48 @@
           //show message
         } else { //got to settings or enable
           var response = $cordovaBeacon.enableBluetooth();
-          response.then(function () {});
+          response.then(function () {
+            init();
+          });
         }
       });
-    }*/
+    }
+    function init () {
+      var params = {
+        identifier: 'iBeacon', //Onyx beacon
+        uuid: 'b9407f30-f5f8-466e-aff9-25556b57fe6d', //id Onyx
+        major: 52209,
+        minor: 34627
+      };
+      var region = $cordovaBeacon.createBeaconRegion(params.identifier, params.uuid, params.major, params.minor);
+      $cordovaBeacon.startMonitoringForRegion(region)
+      .then(monitoring, failed);
+    }
+    function monitoring (res) {
+      vm.isFounded = true;
+      $ionicPopup.alert({
+        title: 'object',
+        template: JSON.stringify(res)
+      });
+    }
+    function failed (res) {
+      $ionicPopup.alert({
+        title: 'fails',
+        template: JSON.stringify(res)
+      });
+    }
+    $rootScope.$on('$cordovaBeacon:peripheralManagerDidStartAdvertising', function (event, pluginResult) {
+      $ionicPopup.alert({
+        title: 'ad',
+        template: JSON.stringify(pluginResult)
+      });
+    });
+    $rootScope.$on('$cordovaBeacon:didRangeBeaconsInRegion', function (event, pluginResult) {
+      $ionicPopup.alert({
+        title: 'ad',
+        template: JSON.stringify(pluginResult)
+      });
+    });
   }
 
 })();
