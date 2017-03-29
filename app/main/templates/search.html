@@ -3,10 +3,14 @@
     <div class="row">
       <div class="col col-80 center"> 
           <div ng-hide="vm.isFounded" class="radar"></div>
-          <div ng-show="vm.isFounded" class="cont text-center">
+         <!-- <div ng-show="vm.isFounded" class="cont text-center">
             <span class="ion-checkmark-round checked "></span>
-          </div>
-          <p ng-data-bind="vm.test"></p>
+          </div> -->
+            <ion-list>
+            <ion-item ng-show="vm.isFounded" ng-repeat="i in vm.macArray">
+                <span>{{i}}</span>               
+            </ion-item>
+          </ion-list>
       </div>
 
     </div>

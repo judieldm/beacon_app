@@ -4,20 +4,22 @@
   angular.module('main')
   .controller('HomeCtrl', homeCtrl);
 
-  function homeCtrl ($log, $rootScope, $ionicPlatform, $cordovaBeacon, $timeout, $ionicPopup) {
+  function homeCtrl ($log, $rootScope, $ionicPlatform, $cordovaBeacon, $timeout, $ionicPopup, $cordovaBluetoothLE) {
     var vm = this;
     vm.isFounded = false;
     vm.test = 'dddd';
     vm.value;
+    vm.macArray = [];
     /*--------------------------------------*/
     $ionicPlatform.ready(onReady);
     function onReady () {
       if (window.cordova) {
-        $cordovaBeacon.isBluetoothEnabled()
-        .then(bluetoothVerification);
+        /*$cordovaBeacon.isBluetoothEnabled()
+        .then(bluetoothVerification);*/
+        init();
       }
     }
-   /* function init () {
+    function init () {
       var params = {
         request: true,
         //restoreKey: "bluetooth-test-app"
@@ -37,11 +39,8 @@
       });
     }
     function scan () {
-      var params = {
-        services: [],
-        allowDuplicates: false,
-      };
-      params.callbackType = 2;
+      evothings.easyble.startScan(onDeviceFound, onScanError);
+      /*params.callbackType = 2;
       $cordovaBluetoothLE.startScan(params).then(function (obj) {
         $ionicPopup.alert({
           title: 'stop',
@@ -68,11 +67,48 @@
             });
           });
         }
+      });*/
+    }
+    function onDeviceFound (device) {
+      var val = $cordovaBluetoothLE.encodedStringToBytes(device.scanRecord);
+      var byteStr = '';
+      for (var i = 0; i < val.length; i++) {
+        var byte = val[i].toString(16);
+        if (byte.length === 1) {
+          byte = '0' + byte;
+        }
+        byteStr += byte;
+      }
+      $ionicPopup.alert({
+        title: 'ok',
+        template: device.getName()
+      });
+      vm.macArray.push(device.address);
+                        
+    }
+    function onScanError (err) {
+      $ionicPopup.alert({
+        title: 'nop',
+        template: '' + JSON.stringify(err)
       });
     }
-    function add (val) {
-      vm.value = val;
-      var params = {address: vm.value.address, timeout: 10000};
+
+    /*function add (value) {
+      vm.value = value;
+     // var params = {address: vm.value.address, timeout: 10000};
+      var val = $cordovaBluetoothLE.encodedStringToBytes(value.advertisement);
+      //var byteStr = '';
+      $ionicPopup.alert({
+        title: 'value',
+        template: val
+      });
+      for (var i = 0; i < val.length; i++) {
+        var byte = val[i].toString(16);
+        if (byte.length === 1) {
+          byte = '0' + byte;
+        }
+        byteStr += byte;
+      }
       $cordovaBluetoothLE.connect(params)
       .then(null, function (obj) {
         $ionicPopup.alert({
@@ -86,8 +122,8 @@
         });
         discover(vm.value.address);
       });
-    }
-    function discover (address) {
+    }*/
+    /*function discover (address) {
       var params = {
         address: address,
         timeout: 10000
@@ -104,12 +140,12 @@
         });
       });
     }*/
-    function bluetoothVerification (boolean) {
+   /* function bluetoothVerification (boolean) {
       if (!boolean) {
         showPopUp();
       }
       else {
-        init();
+        //init();
       }
     }
     function showPopUp () {
@@ -126,12 +162,13 @@
         } else { //got to settings or enable
           var response = $cordovaBeacon.enableBluetooth();
           response.then(function () {
-            init();
+
           });
         }
       });
-    }
-    function init () {
+    }*/
+
+    /*function init () {
       var params = {
         identifier: 'iBeacon', //Onyx beacon
         uuid: 'b9407f30-f5f8-466e-aff9-25556b57fe6d', //id Onyx
@@ -166,7 +203,7 @@
         title: 'ad',
         template: JSON.stringify(pluginResult)
       });
-    });
+    });*/
   }
 
 })();
