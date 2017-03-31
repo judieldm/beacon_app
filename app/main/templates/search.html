@@ -6,13 +6,29 @@
          <!-- <div ng-show="vm.isFounded" class="cont text-center">
             <span class="ion-checkmark-round checked "></span>
           </div> -->
-            <ion-list>
-            <ion-item ng-show="vm.isFounded" ng-repeat="i in vm.macArray">
+           
+      </div>
+    <div class="row" ng-show="vm.isFounded">
+       <ion-list>
+            <ion-item ng-repeat="i in vm.beaconsList">
+                <span class="text-center">UUID</span>
+                <span>{{i.uuid}}</span>
+                <span class="text-center">Proximity</span>
+                <span>{{i.proximity}}</span>
+                <span class="text-center">Major</span>
+                <span>{{i.major}}</span>
+                <span class="text-center">Minor</span>
+                <span>{{i.minor}}</span>                          
+            </ion-item>
+          </ion-list>
+    </div>
+        <div class="row" ng-show="vm.isFounded">
+       <ion-list>
+            <ion-item ng-repeat="i in vm.macArray">
                 <span>{{i}}</span>               
             </ion-item>
           </ion-list>
-      </div>
-
+    </div>
     </div>
   </ion-content>
 </ion-view>
