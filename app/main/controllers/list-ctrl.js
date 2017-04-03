@@ -4,20 +4,30 @@
   angular.module('main')
   .controller('ListCtrl', listCtrl);
 
-  function listCtrl ($log, $cordovaInAppBrowser, $ionicPlatform, DataService) {
+  function listCtrl ($log, $cordovaInAppBrowser, $ionicPlatform, DataService, $state) {
     var vm = this;
-    var options = {
+    /*var options = {
       location: 'yes',
       clearcache: 'yes',
       toolbar: 'no'
-    };
+    };*/
     vm.delete = onDelete;
     vm.open = onOpen;
-    $log.log(DataService);
-    DataService.init();
+    vm.coupons = [];
+    var coupons = DataService.selectCoupons();
+    coupons.then(function (res) {
+      for (var i = 0; i < res.rows.length; i++) {
+        var obj = JSON.parse(res.rows.item(i).coupon);
+        obj.isVisited = res.rows.item(i).isVisited;
+        obj.id = res.rows.item(i).id;
+        vm.coupons.push(obj);
+      }
+    });
+    $log.log(vm.coupons);
     function onOpen (item) {
       $log.log(item);
-      $cordovaInAppBrowser.open('http://ngcordova.com', '_blank', options);
+      //$cordovaInAppBrowser.open(item, '_self', options);
+      $state.go('beacon.find', {'url': item});
     }
     function onDelete (item) {
       $log.log(item);

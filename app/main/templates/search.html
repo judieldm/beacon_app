@@ -6,6 +6,7 @@
          <!-- <div ng-show="vm.isFounded" class="cont text-center">
             <span class="ion-checkmark-round checked "></span>
           </div> -->
+
       </div>
     </div>
     <div class="row" ng-show="vm.isFounded" >
@@ -27,7 +28,7 @@
             </ion-list>
         </div>
     </div>
-    <div class="row">
+    <div class="row" ng-show="vm.isFounded">
       <div class="col">
         <div class="col text-center">
           MAC ADDRESS
@@ -37,6 +38,9 @@
             <span>{{i}}</span>               
           </ion-item>
         </ion-list>
+      </div>
+
+           
       </div>
     </div>
   </ion-content>

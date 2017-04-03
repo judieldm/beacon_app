@@ -1,8 +1,13 @@
 'use strict';
 (function () {
   angular.module('main')
-  .config(function ($stateProvider, $urlRouterProvider) {
-
+  .config(function ($stateProvider, $urlRouterProvider, $sceDelegateProvider) {
+    $sceDelegateProvider.resourceUrlWhitelist([
+      // Allow same origin resource loads.
+      'self',
+      // Allow loading from our assets domain.  Notice the difference between * and **.
+      'http://dementecreativo.com/**'
+    ]);
     // ROUTING with ui.router
     $urlRouterProvider.otherwise('/beacon/search');
     $stateProvider
@@ -27,6 +32,15 @@
           'list': {
             templateUrl: 'main/templates/list.html',
             controller: 'ListCtrl as vm'
+          }
+        }
+      })
+      .state('beacon.find', {
+        url: '/find/:url',
+        views: {
+          'list': {
+            templateUrl: 'main/templates/find.html',
+            controller: 'FindCtrl as vm'
           }
         }
       });

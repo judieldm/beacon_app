@@ -20,7 +20,10 @@ $ionicons-font-path: "../assets/fonts" !default;
 
 // Include all of Ionic
 @import "../../bower_components/ionic/scss/ionic";
-
+.iframe-wrapper iframe{
+  width: 100%;
+  height: 100%;
+}
 .tab-item{
   max-width: none;
 }

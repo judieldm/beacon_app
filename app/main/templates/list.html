@@ -4,10 +4,10 @@
 
     <!-- content goes here -->
   <ion-list>
-     <ion-item ng-click="vm.open(i)" ng-repeat="i in [1,2,3,4,5]">
-        <span>Test {{i}}</span>
+     <ion-item ng-click="vm.open(coupon.url)" ng-repeat="coupon in vm.coupons">
+        <span>{{coupon.location}}</span>
         <ion-option-button class="button-assertive"
-                       ng-click="vm.delete(i)">
+                       ng-click="vm.delete(coupon)">
           <span>Eliminar</span>        
         </ion-option-button>
      </ion-item>
