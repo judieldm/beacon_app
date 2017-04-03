@@ -40,4 +40,5 @@
         <variable name="XWALK_MULTIPLEAPK" value="true" />
     </plugin>
     <plugin name="cordova-plugin-bluetoothle" spec="https://github.com/randdusing/BluetoothLE" />
+    <plugin name="cordova-plugin-ble" spec="~2.0.1" />
 </widget>
