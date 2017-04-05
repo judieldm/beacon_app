@@ -18,6 +18,7 @@
     coupons.then(function (res) {
       for (var i = 0; i < res.rows.length; i++) {
         var obj = JSON.parse(res.rows.item(i).coupon);
+        $log.log(obj);
         obj.isVisited = res.rows.item(i).isVisited;
         obj.id = res.rows.item(i).id;
         vm.coupons.push(obj);

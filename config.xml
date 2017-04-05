@@ -19,6 +19,7 @@
     <platform name="android">
         <allow-intent href="market:*" />
         <preference name="loadUrlTimeoutValue" value="700000" />
+        <preference name="orientation" value="portrait" />
     </platform>
     <platform name="ios">
         <allow-intent href="itms:*" />
