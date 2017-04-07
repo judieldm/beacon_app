@@ -9,22 +9,23 @@
 
       </div>
     </div>
+   <!-- <div ng-show="vm.notBlue">
+      <div class="col text center">
+        <span>El serviico de Bluetooth se encuentra desactivado</span>
+      <div>
+    </div>-->
     <div class="row" ng-show="vm.isFounded" >
        <div class="col ">
         <div class="col text-center">
           BEACON
         </div>
             <ion-list>
-              <ion-item ng-repeat="i in vm.beaconsList">
-                  <span class="center">UUID</span>
-                  <span>{{i.uuid}}</span>
-                  <span class="center">PROXIMITY</span>
-                  <span>{{i.proximity}}</span>
-                  <span class="center">MAJOR</span>
-                  <span>{{i.major}}</span>
-                  <span class="center">MINOR</span>
-                  <span>{{i.minor}}</span>               
+              <ion-item ng-repeat="i in vm.beaconsList">    
+               <button ng-click="vm.goList()" class="button button-positive center">
+               Lista
+              </button>           
               </ion-item>
+
             </ion-list>
         </div>
     </div>

@@ -4,10 +4,12 @@
   angular.module('main')
   .controller('HomeCtrl', homeCtrl);
 
-  function homeCtrl ($log, $q, $rootScope, $ionicPlatform, $cordovaBeacon, $timeout, $ionicPopup, $cordovaBluetoothLE, ApiService, DataService) {
+  function homeCtrl ($log, $q, $rootScope, $ionicPlatform, $cordovaBeacon, $timeout, $ionicPopup, $cordovaBluetoothLE, ApiService, DataService, $state) {
     var vm = this;
     vm.isFounded = false;
+    vm.notBlue=false;
     vm.test = 'dddd';
+    vm.goList = onGo;
     vm.value;
     vm.macArray = [];
     vm.beaconsList = [];
@@ -18,9 +20,13 @@
     vm.couponsInLocal = [];
     vm.beaconsLocal = [];
     vm.localRegions = [];
+    function onGo () {
+      $state.go('beacon.list');
+    }
     $ionicPlatform.ready(onReady);
     function onReady () {
       DataService.init();
+      DataService.delete();
       init();
     }
     function init () {
@@ -64,7 +70,7 @@
           identifier: array[i].name,
           uuid: array[i].uuid
         };
-        var region = $cordovaBeacon.createBeaconRegion(params.identifier, params.uuid, params.major, params.minor);
+        var region = $cordovaBeacon.createBeaconRegion(params.identifier, params.uuid);
         vm.localRegions.push(region);
         $cordovaBeacon.startRangingBeaconsInRegion(region);
       }
@@ -196,6 +202,9 @@
       //-------------save coupons
       $log.log(vm.couponsInLocal);
       DataService.insertCoupons(vm.couponsInLocal);
+      $state.go('beacon.list');
+      
+      
     }
   }
 

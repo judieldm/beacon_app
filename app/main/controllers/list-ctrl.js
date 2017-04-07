@@ -31,6 +31,8 @@
       $state.go('beacon.find', {'url': item});
     }
     function onDelete (item) {
+      vm.coupons.splice(item, 1);
+      $log.log(vm.coupons);
       $log.log(item);
     }
 

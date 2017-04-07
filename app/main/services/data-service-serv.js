@@ -10,6 +10,21 @@
     vm.insertCoupons = onInsertCoupons;
     vm.selectBeacons = onSelectBeacons;
     vm.insertBeacon = onInsertBeacon;
+    vm.delete = onDelete;
+    function onDelete () {
+       var db;
+      var defered = $q.defer();
+      var promise = defered.promise;
+      if (window.cordova) {
+        if (isAndroid) {
+          db = $cordovaSQLite.openDB({ name: 'my.db', bgType: 1, iosDatabaseLocation: 'default' });
+          $cordovaSQLite.execute(db, 'DELETE FROM COUPONS').then(function (res) {
+            defered.resolve(res);
+          });
+        }
+      }
+      return promise;
+    }
     function onInit () {
       var db;
       if (window.cordova) {
