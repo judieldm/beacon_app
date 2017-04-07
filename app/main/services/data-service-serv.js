@@ -4,54 +4,83 @@
   .service('DataService', dataService);
   function dataService ($log, $cordovaSQLite, $q) {
     var vm = this;
-    var isAndroid = ionic.Platform.isAndroid();
-    var process = onProcess;
+      var isAndroid = ionic.Platform.isAndroid();
+    vm.init = onInit;
     vm.selectCoupons = onSelectCoupons;
     vm.insertCoupons = onInsertCoupons;
+    vm.selectBeacons = onSelectBeacons;
     vm.insertBeacon = onInsertBeacon;
-    vm.getBeacons = onGetBeacons;
-    function onProcess (query, params) {
+    function onInit () {
+      var db;
+      if (window.cordova) {
+        if (isAndroid) {
+          db = $cordovaSQLite.openDB({ name: 'my.db', bgType: 1, iosDatabaseLocation: 'default' });
+          var query = 'CREATE TABLE IF NOT EXISTS COUPONS (id INTEGER PRIMARY KEY AUTOINCREMENT, coupon text ,isVisited boolean); CREATE TABLE IF NOT EXISTS BEACONS (id integer autoincrement, beacon text)';
+          $cordovaSQLite.execute(db, query).then(function (res) {
+            $log.log(res);
+          });
+        }
+      } else {
+        db = window.openDatabase('my.db', '1', 'my', 1024 * 1024 * 100);
+      }
+    }
+    function onSelectCoupons () {
       var db;
       var defered = $q.defer();
       var promise = defered.promise;
       if (window.cordova) {
         if (isAndroid) {
           db = $cordovaSQLite.openDB({ name: 'my.db', bgType: 1, iosDatabaseLocation: 'default' });
-          if (params === undefined) {
-            $cordovaSQLite.execute(db, query).then(function (res) {
-              defered.resolve(res);
-            });
-          } else {
-            params.forEach(function (val) {
-              $cordovaSQLite.execute(db, query, [JSON.stringify(val), false]).then(function (res) {
-                defered.resolve(res);
-              });
-            });
-          }
+          var query = 'SELECT * FROM COUPONS';
+          $cordovaSQLite.execute(db, query).then(function (res) {
+            defered.resolve(res);
+          });
         }
       }
       return promise;
     }
-    function onSelectCoupons () {
-      var query = 'SELECT * FROM COUPONS';
-      var promise = process(query);
-      return promise;
-    }
     function onInsertCoupons (couponsArray) {
-      var query = 'INSERT INTO COUPONS (coupon, isVisited) VALUES (?,?)';
-      var promise = process(query, couponsArray);
+      var db;
+      if (window.cordova) {
+        if (isAndroid) {
+          db = $cordovaSQLite.openDB({ name: 'my.db', bgType: 1, iosDatabaseLocation: 'default' });
+          couponsArray.forEach(function (val) {
+            var query = 'INSERT INTO COUPONS (coupon, isVisited) VALUES (?,?)';
+            $cordovaSQLite.execute(db, query, [JSON.stringify(val), false]).then(function (res) {
+              $log.log(res);
+            });
+          });
+        }
+      }
+    }
+    function onSelectBeacons () {
+      var db;
+      var defered = $q.defer();
+      var promise = defered.promise;
+      if (window.cordova) {
+        if (isAndroid) {
+          db = $cordovaSQLite.openDB({ name: 'my.db', bgType: 1, iosDatabaseLocation: 'default' });
+          var query = 'SELECT * FROM BEACONS';
+          $cordovaSQLite.execute(db, query).then(function (res) {
+            defered.resolve(res);
+          });
+        }
+      }
       return promise;
     }
-    function onInsertBeacon (beacons) {
-      var array = angular.isArray(beacons) ? beacons : [].push(beacons);
-      var query = 'CREATE TABLE IF NOT EXISTS BEACONS (id integer autoincrement, beacon text, isUSed boolean);INSERT INTO BEACONS (beacon,isUsed) VALUES (?,?)';
-      var promise = process(query, array);
-      return promise;
-    }
-    function onGetBeacons () {
-      var query = 'SELECT * FROM BEACONS';
-      var promise = process(query);
-      return promise;
+    function onInsertBeacon (beaconsArray) {
+       var db;
+      if (window.cordova) {
+        if (isAndroid) {
+          db = $cordovaSQLite.openDB({ name: 'my.db', bgType: 1, iosDatabaseLocation: 'default' });
+          beaconsArray.forEach(function (val) {
+            var query = 'INSERT INTO BEACONS (beacon) VALUES (?)';
+            $cordovaSQLite.execute(db, query, [JSON.stringify(val), false]).then(function (res) {
+              $log.log(res);
+            });
+          });
+        }
+      }
     }
   }
 })();

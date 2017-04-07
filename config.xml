@@ -42,4 +42,5 @@
     </plugin>
     <plugin name="cordova-plugin-bluetoothle" spec="https://github.com/randdusing/BluetoothLE" />
     <plugin name="cordova-plugin-ble" spec="~2.0.1" />
+    <plugin name="com-badrit-macaddress" spec="https://github.com/mohamed-salah/MacAddress.git" />
 </widget>

@@ -4,16 +4,20 @@
   .service('ApiService', function ($http, $q) {
     var vm = this;
     var url = 'https://connect.onyxbeacon.com/';
+    var url2 = 'https://connect.onyxbeacon.com/';
     var method = {
       auth: 'oauth/client',
       uuid: 'api/v2.5/beacons',
       campaign: 'api/v2.5/campaigns',
-      coupons: 'api/v2.5/coupons'
+      coupons: 'api/v2.5/coupons',
+      visit: 'api/visits/'
     };
     vm.getToken = getToken;
     vm.getUUid = getUUid;
     vm.getCampaign = getCampaign;
     vm.getCoupons = getCoupons;
+    vm.getVisit = getVisit;
+    vm.insertVisit = insertVisit;
     function getToken () {
       var defered = $q.defer();
       var promise = defered.promise;
@@ -88,6 +92,40 @@
         defered.reject(err);
       });
       return promise;
+    }
+    function getVisit (mac, location) {
+      var defered = $q.defer();
+      var promise = defered.promise;
+      $http({
+        method: 'GET',
+        url: url + method.visit + mac +'/' + location,
+      })
+      .success(function (data) {
+        defered.resolve(data);
+      })
+      .error(function (err) {
+        defered.reject(err);
+      });
+      return promise;
+    }
+    function insertVisit (mac, location) {
+      var defered = $q.defer();
+      var promise = defered.promise;
+      $http({
+        method: 'POST',
+        url: url + method.visit,
+        data: {
+          'mac_address':mac,
+          'location': location
+        }
+      })
+      .success(function (data) {
+        defered.resolve(data);
+      })
+      .error(function (err) {
+        defered.reject(err);
+      });
+      return promise;      
     }
   });
 })();

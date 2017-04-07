@@ -20,6 +20,7 @@
     vm.localRegions = [];
     $ionicPlatform.ready(onReady);
     function onReady () {
+      DataService.init();
       init();
     }
     function init () {
