@@ -7,6 +7,7 @@
   function homeCtrl ($log, $q, $rootScope, $ionicPlatform, $cordovaBeacon, $timeout, $ionicPopup, $cordovaBluetoothLE, ApiService, DataService, $state) {
     var vm = this;
     vm.isFounded = false;
+    vm.isFounded2 = false;
     vm.notBlue=false;
     vm.test = 'dddd';
     vm.goList = onGo;
@@ -44,168 +45,84 @@
       });
     }
     function bluetoothVerification () {
-     /* DataService.getBeacons().then(function (res) {
-        for (var i = 0; i < res.rows.length; i++) {
-          var obj = JSON.parse(res.rows.item(i).beacon);
-          vm.beaconsLocal.push(obj);
-        }
-        beacon(vm.beaconsLocal);
-        setTimeout(function () {
-          vm.localRegions.forEach(function (region) {
-            $cordovaBeacon.stopRangingBeaconsInRegion(region);
-          });
-        }, 5000);
-        if (vm.beaconsList.length === 0) {
-          getToken();
-        }
-        else {
-          processData();
-        }
-      });*/
-      getToken();
+      beacon();
     }
-    function beacon (array) {
-      for (var i in array) {
+    function beacon () {
         var params = {
-          identifier: array[i].name,
-          uuid: array[i].uuid
+          identifier: 'estimote',
+          uuid: 'B9407F30-F5F8-466E-AFF9-25556B57FE6D'
         };
         var region = $cordovaBeacon.createBeaconRegion(params.identifier, params.uuid);
-        vm.localRegions.push(region);
         $cordovaBeacon.startRangingBeaconsInRegion(region);
-      }
-      //window.evothings.easyble.startScan(onDeviceFound, onScanError);
     }
-    /*function onDeviceFound (device) {
-      vm.isFounded = true;
-      if (vm.macArray.indexOf(device.address) === -1) {
-        vm.macArray.push(device.address);
-      }
-    }
-    function onScanError (err) {
-      $log.log(err);
-    }
-    function adCheck (result) {
-      $log.log(result);
-    }
-    function rating (res) {
-      $log.log(res);
-    }
-    function monitoring () {
-      vm.isFounded = true;
-    }
-    function failed (res) {
-      $ionicPopup.alert({
-        title: 'fails',
-        template: JSON.stringify(res)
-      });
-    }*/
+
 
 
     //---------------------------------------EVENTS-----------------------------------------------
     $rootScope.$on('$cordovaBeacon:didRangeBeaconsInRegion', function (event, pluginResult) {
       if (pluginResult.beacons.length !== 0) {
         if (vm.beaconsList.length === 0) {
-          var aux = pluginResult.beacons.find(function (beacon) {
-            return beacon.major === '52209';//sim in prod get  first
-          });
-          vm.beaconsList.push(aux);
+          $log.log(pluginResult);
+          vm.beaconsList =pluginResult.beacons;
           processData();
         }
-        vm.isFounded = true;
+
       }
     });
-    vm.token;
-    function getToken () {
-      ApiService.getToken()
-      .then(onGetTokenSuccess);
-    }
-    function onGetTokenSuccess (data) {
-      var promises = [];
-      vm.token = data.access_token;
-      promises.push(ApiService.getUUid(vm.token));
-      promises.push(ApiService.getCampaign(vm.token));
-      promises.push(ApiService.getCoupons(vm.token));
-      $q.all(promises)
-      .then(onGetPromisesSuccess);
-    }
-    function onGetPromisesSuccess (data) {
-      vm.beaconArray = data[0].beacons.map(function (value) {
-        var obj = {
-          uuid: value.uuid,
-          name: 'estimote',//value.device_name,
-          major: value.major,
-          minor: value.minor,
-          location: value.location
-        };
-        return obj;
-      });
-      beacon(vm.beaconArray);
-      vm.campaignsArray = data[1].campaigns.map(function (value) {
-        var obj = {
-          isEnabled: value.enabled,
-          name: value.name,
-          locations: value.locations,
-          contents: value.contents,
-          start_time: value.start_time,
-          end_time: value.end_time
-        };
-        return obj;
-      });
-      vm.couponsArray = data[2].coupons.map(function (value) {
-        var obj = {
-          name: value.name,
-          message: value.message,
-          url: value.url
-        };
-        return obj;
-      });
-    }
+ 
     function processData () {
-      var beacon = vm.beaconArray;
-      var l;
-      for (var a in beacon) {
-        if (beacon[a].minor === parseInt(vm.beaconsList[0].minor)) {
-          l = beacon[a].location;
-          break;
-        }
-      }
-      $log.log(l);
-      for (var i in vm.campaignsArray) {
-        var element = vm.campaignsArray[i].locations.filter(function (val) {
-          if (val.id === l.id) {
-            return val;
-          }
+       var array=[];
+         var promises = [];
+      ApiService.getDevices().then(function(res){
+        for(var i in vm.beaconsList){
+        var device = res.filter(function(data){
+          return parseInt(vm.beaconsList[i].major) == data.settings.advertisers.ibeacon[0].major
         });
-        if (element.length !== 0 && vm.campaignsArray[i].isEnabled === true) {
-          vm.campaignsFinal.push(vm.campaignsArray[i]);
-        }
+         $log.log(device[0]);
+      
+        promises.push(ApiService.getLink(device[0].identifier));
+            
       }
-      $log.log('-------------------');
-      $log.log(vm.campaignsFinal);
-      //------------------------filter campaigns
-      for (var j in vm.couponsArray) {
-        for (var k in vm.campaignsFinal) {
-          for (var m in vm.campaignsFinal[k].contents) {
-            var split = vm.campaignsFinal[k].contents[m].name.split('-')[1].trim();
-            if (vm.couponsArray[j].name === split) {
-              var aux = vm.couponsArray[j];
-              aux.start = vm.campaignsFinal[k].start_time;
-              aux.end =  vm.campaignsFinal[k].end_time;
-              aux.location = l.full_address.split(',')[0];
-              vm.couponsInLocal.push(aux);
+      $log.log(promises);
+        $q.all(promises).then(function(res){
+          $log.log(res);
+          for(var j in res){
+            var links = res[j].data.here_and_now.current_links
+            for(var i in links){
+              var coupon = {
+                url: links[i].url,
+                title: links[i].title,
+                description: links[i].description
+              }
+              array.push(coupon);
             }
           }
-        }
-      }
-      //--------------------filter coupons
-      //-------------save coupons
-      $log.log(vm.couponsInLocal);
-      DataService.insertCoupons(vm.couponsInLocal);
-      $state.go('beacon.list');
-      
+            DataService.insertCoupons(array);
+            vm.coupons = array;
+            vm.isFounded = true; 
+            setTimeout(function () {
+                vm.isFounded2= true;
+            }, 1000);
+          });
+     
+      });
       
     }
+    //-----------------------------------------
+
+    vm.delete = onDelete;
+    vm.open = onOpen;
+   
+    function onOpen (item) {
+      $log.log(item);
+      $state.go('beacon.find', {'url': item});
+    }
+    function onDelete (item) {
+      vm.coupons.splice(item, 1);
+      $log.log(vm.coupons);
+      $log.log(item);
+    }
+
   }
 
 })();

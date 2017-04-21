@@ -1,36 +1,19 @@
-<ion-view view-title="Buscar">
-  <ion-content class="has-header padding">
-    <div class="row">
+<ion-view view-title="Visitas">
+  <ion-content class="has-header">
+    <div class="row" ng-hide="vm.isFounded">
       <div class="col col-80 center"> 
-          <div ng-hide="vm.isFounded" class="radar"></div>
-         <!-- <div ng-show="vm.isFounded" class="cont text-center">
-            <span class="ion-checkmark-round checked "></span>
-          </div> -->
-
+          <div  class="radar"></div>
       </div>
     </div>
-   <!-- <div ng-show="vm.notBlue">
-      <div class="col text center">
-        <span>El serviico de Bluetooth se encuentra desactivado</span>
-      <div>
-    </div>-->
-    <div class="row" ng-show="vm.isFounded" >
-       <div class="col ">
-        <div class="col text-center">
-          BEACON
-        </div>
-            <ion-list>
-              <ion-item ng-repeat="i in vm.beaconsList">    
-               <button ng-click="vm.goList()" class="button button-positive center">
-               Lista
-              </button>           
-              </ion-item>
-
-            </ion-list>
-        </div>
-    </div>
-              
-      </div>
-    </div>
+            <ion-list ng-show="vm.isFounded2" >
+                <ion-item ng-click="vm.open(coupon.url)"  ng-repeat="coupon in vm.coupons">
+                    <h3>{{coupon.title}}</h3>
+                    <p>{{coupon.description}}</p>
+                    <ion-option-button class="button-assertive"
+                                  ng-click="vm.delete($index)">
+                      <span>Eliminar</span>        
+                    </ion-option-button>
+                </ion-item>
+              </ion-list>           
   </ion-content>
 </ion-view>

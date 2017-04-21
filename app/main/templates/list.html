@@ -3,15 +3,24 @@
   <ion-content class=" has-header">
 
     <!-- content goes here -->
-  <ion-list>
-     <ion-item ng-click="vm.open(coupon.url)"  ng-repeat="coupon in vm.coupons">
-        <span>{{coupon.location}}</span>
-        <ion-option-button class="button-assertive"
-                       ng-click="vm.delete($index)">
-          <span>Eliminar</span>        
-        </ion-option-button>
-     </ion-item>
-  </ion-list>
+
+ <div class="list">
+  <label class="item item-input item-floating-label">
+    <span class="input-label">Nombre</span>
+    <input type="text" placeholder="Nombre">
+  </label>
+  <label class="item item-input item-floating-label">
+    <span class="input-label">Apellido</span>
+    <input type="text" placeholder="Apellido">
+  </label>
+  <label class="item item-input item-floating-label">
+    <span class="input-label">Correo</span>
+    <input type="text" placeholder="Correo">
+  </label>
+<button class="button button-full button-positive">
+  Guardar
+</button>
+</div>
 
   </ion-content>
 </ion-view>

@@ -38,7 +38,7 @@
       .state('beacon.find', {
         url: '/find/:url',
         views: {
-          'list': {
+          'search': {
             templateUrl: 'main/templates/find.html',
             controller: 'FindCtrl as vm'
           }

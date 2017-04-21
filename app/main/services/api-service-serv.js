@@ -3,51 +3,21 @@
   angular.module('main')
   .service('ApiService', function ($http, $q) {
     var vm = this;
-    var url = 'https://connect.onyxbeacon.com/';
-    var url2 = 'https://connect.onyxbeacon.com/';
+    var url = 'https://cloud.estimote.com/';
     var method = {
-      auth: 'oauth/client',
-      uuid: 'api/v2.5/beacons',
-      campaign: 'api/v2.5/campaigns',
-      coupons: 'api/v2.5/coupons',
-      visit: 'api/visits/'
+      devices: 'v2/devices',
+      link: 'v3/here_and_now/devices/',
+
     };
-    vm.getToken = getToken;
-    vm.getUUid = getUUid;
-    vm.getCampaign = getCampaign;
-    vm.getCoupons = getCoupons;
-    vm.getVisit = getVisit;
-    vm.insertVisit = insertVisit;
-    function getToken () {
-      var defered = $q.defer();
-      var promise = defered.promise;
-      var params = {
-        'client_id': 'af1cd006576dc09b7cf7660d4e010fbf434ad4bf',
-        'client_secret': '335c77e0ff4a4d36b97e8464ef880cdef30fb795',
-        'scope': 'crud'
-      };
-      $http({
-        method: 'POST',
-        url: url + method.auth,
-        data: params
-      })
-      .success(function (data) {
-        defered.resolve(data);
-      })
-      .error(function (err) {
-        defered.reject(err);
-      });
-      return promise;
-    }
-    function getUUid (token) {
-      var defered = $q.defer();
-      var promise = defered.promise;
-      $http({
+   vm.getDevices= onGetDevices;
+   vm.getLink = ongetLink;
+   function onGetDevices(){
+     $http.defaults.headers.common['Authorization'] = 'Basic ' + btoa('johan-canzanese-net-s---fz4' + ':' + 'bda0195d4c72c6d493e5ab85a59ad16a');
+     var defered = $q.defer();
+     var promise = defered.promise;
+     $http({
         method: 'GET',
-        url: url + method.uuid,
-        headers: {
-          'Authorization': 'Bearer ' + token
-        }
+        url: url + method.devices,
       })
       .success(function (data) {
         defered.resolve(data);
@@ -56,16 +26,14 @@
         defered.reject(err);
       });
       return promise;
-    }
-    function getCampaign (token) {
-      var defered = $q.defer();
-      var promise = defered.promise;
-      $http({
+   }
+   function ongetLink(deviceid){
+     $http.defaults.headers.common['Authorization'] = 'Basic ' + btoa('johan-canzanese-net-s---fz4' + ':' + 'bda0195d4c72c6d493e5ab85a59ad16a');
+     var defered = $q.defer();
+     var promise = defered.promise;
+     $http({
         method: 'GET',
-        url: url + method.campaign,
-        headers: {
-          'Authorization': 'Bearer ' + token
-        }
+        url: url + method.link + deviceid
       })
       .success(function (data) {
         defered.resolve(data);
@@ -74,59 +42,8 @@
         defered.reject(err);
       });
       return promise;
-    }
-    function getCoupons (token) {
-      var defered = $q.defer();
-      var promise = defered.promise;
-      $http({
-        method: 'GET',
-        url: url + method.coupons,
-        headers: {
-          'Authorization': 'Bearer ' + token
-        }
-      })
-      .success(function (data) {
-        defered.resolve(data);
-      })
-      .error(function (err) {
-        defered.reject(err);
-      });
-      return promise;
-    }
-    function getVisit (mac, location) {
-      var defered = $q.defer();
-      var promise = defered.promise;
-      $http({
-        method: 'GET',
-        url: url + method.visit + mac +'/' + location,
-      })
-      .success(function (data) {
-        defered.resolve(data);
-      })
-      .error(function (err) {
-        defered.reject(err);
-      });
-      return promise;
-    }
-    function insertVisit (mac, location) {
-      var defered = $q.defer();
-      var promise = defered.promise;
-      $http({
-        method: 'POST',
-        url: url + method.visit,
-        data: {
-          'mac_address':mac,
-          'location': location
-        }
-      })
-      .success(function (data) {
-        defered.resolve(data);
-      })
-      .error(function (err) {
-        defered.reject(err);
-      });
-      return promise;      
-    }
+   }
+
   });
 })();
 
